@@ -1,6 +1,6 @@
 package org.example;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -41,7 +41,7 @@ public class RegisterTest {
     @BeforeEach
     public void goToLoginAndFinElements(){
 
-        driver.get("https://automationexercise.com/login");
+        driver.get("https://www.automationexercise.com/login");
 
         inputName = wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("name")));
         inputEmail = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("input[data-qa='signup-email']")));
@@ -87,71 +87,6 @@ public class RegisterTest {
     }
 
 
-//
-//            @ParameterizedTest
-//    @CsvSource({
-//            "'', analia@gmail.com, name", //falla el nombre
-//            "'', '', ambos", // fallan ambos
-//            "Emiliano, '', email", // falla el email
-//            "Emiliano, emiliano.com, email", // falla el email
-//            // "Analia Bauer , bauerany@gmail.com, emailExist", //caso de usuario ya registrado
-//         "Analia Bauer, analiabauer.testing92@gmail.com, none" // caso valido
-//
-//    })
-//    void testValidacionCamposRegistro(String name, String email, String casoEsperado) {
-//        WebElement loginLink = driver.findElement(By.xpath("//*[@id=\"header\"]/div/div/div/div[2]/div/ul/li[4]/a"));
-//        loginLink.click();
-//
-//        WebElement inputName = driver.findElement(By.name("name"));
-//        WebElement inputEmail = driver.findElement(By.cssSelector("input[data-qa='signup-email']"));
-//        WebElement signUpButton = driver.findElement(By.cssSelector("button[data-qa='signup-button']"));
-//
-//        inputName.clear();
-//        inputEmail.clear();
-//
-//        inputName.sendKeys(name != null ? name : "");
-//        inputEmail.sendKeys(email != null ? email : "");
-//        signUpButton.click();
-//
-//        JavascriptExecutor js = (JavascriptExecutor) driver;
-//        boolean nameValido = (Boolean) js.executeScript("return arguments[0].checkValidity();", inputName);
-//        boolean emailValido = (Boolean) js.executeScript("return arguments[0].checkValidity();", inputEmail);
-//
-//        switch (casoEsperado.toLowerCase()) {
-//            case "name":
-//                Assertions.assertFalse(nameValido, "El campo 'name' debería ser inválido");
-//                Assertions.assertTrue(emailValido, "El campo 'email' debería ser válido");
-//                break;
-//            case "email":
-//                Assertions.assertTrue(nameValido, "El campo 'name' debería ser válido");
-//                Assertions.assertFalse(emailValido, "El campo 'email' debería ser inválido");
-//                break;
-//            case "ambos":
-//                Assertions.assertFalse(nameValido, "El campo 'name' debería ser inválido");
-//                Assertions.assertFalse(emailValido, "El campo 'email' debería ser inválido");
-//                break;
-//            case "emailexist":
-//                String mensajeError = wait.until(ExpectedConditions.visibilityOfElementLocated(
-//                        By.xpath("//p[contains(text(),'Email Address already exist')]"))).getText();
-//
-//                Assertions.assertEquals("Email Address already exist!", mensajeError);
-//                break;
-//            case "none":
-//                Assertions.assertTrue(nameValido, "El campo 'name' debería ser válido");
-//                Assertions.assertTrue(emailValido, "El campo 'email' debería ser válido");
-//
-//                new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.urlToBe("https://automationexercise.com/signup"));
-//                Assertions.assertEquals("https://automationexercise.com/signup", driver.getCurrentUrl());
-//                break;
-//
-//            default:
-//                Assertions.fail("Caso de prueba desconocido: " + casoEsperado);
-//        }
-//    }
-
-
-    // "Analia Bauer , bauerany@gmail.com, emailExist", //caso de usuario ya registrado
-
     @Test
     void registrationWithExistingUser() {
 
@@ -159,7 +94,7 @@ public class RegisterTest {
 
         String messageAlreadyExist = wait.until(ExpectedConditions.visibilityOfElementLocated
                 (By.xpath("//*[@id=\"form\"]/div/div/div[3]/div/form/p"))).getText();
-        Assert.assertEquals("Email Address already exist!", messageAlreadyExist);
+        Assertions.assertEquals("Email Address already exist!", messageAlreadyExist);
 
     }
 
@@ -168,8 +103,8 @@ public class RegisterTest {
 
         completeForm("Analia Bauer", "analiabauer" + System.currentTimeMillis() + "@gmail.com");
 
-        wait.until(ExpectedConditions.urlToBe("https://automationexercise.com/signup"));
-        Assertions.assertEquals("https://automationexercise.com/signup", driver.getCurrentUrl());
+        wait.until(ExpectedConditions.urlToBe("https://www.automationexercise.com/signup"));
+        Assertions.assertEquals("https://www.automationexercise.com/signup", driver.getCurrentUrl());
     }
 
 

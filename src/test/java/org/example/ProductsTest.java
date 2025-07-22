@@ -1,6 +1,6 @@
 package org.example;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Random;
 
 
-public class AutomationExcerciseTest {
+public class ProductsTest {
 
     static WebDriver driver;
     static WebDriverWait wait;
@@ -65,7 +65,7 @@ public class AutomationExcerciseTest {
         productsLink.click();
 
         currentURL = driver.getCurrentUrl();
-        Assert.assertEquals("https://automationexercise.com/products", currentURL);
+        Assertions.assertEquals("https://automationexercise.com/products", currentURL);
 
         // Hover sobre la tarjeta del primer producto
         List<WebElement> tarjetas = driver.findElements(By.cssSelector(".product-image-wrapper"));
@@ -88,17 +88,17 @@ public class AutomationExcerciseTest {
         // Confirmación de modal
         WebElement confirmationModal = wait.until(ExpectedConditions.visibilityOfElementLocated(
                 By.className("modal-content")));
-        Assert.assertNotNull(confirmationModal);
+        Assertions.assertNotNull(confirmationModal);
 
         WebElement viewCart = wait.until(ExpectedConditions.elementToBeClickable(
                 By.xpath("//u[text()='View Cart']")));
         viewCart.click();
 
         currentURL = driver.getCurrentUrl();
-        Assert.assertEquals("https://automationexercise.com/view_cart", currentURL);
+        Assertions.assertEquals("https://automationexercise.com/view_cart", currentURL);
 
         WebElement productInCart = driver.findElement(By.id("product-1"));
-        Assert.assertNotNull(productInCart);
+        Assertions.assertNotNull(productInCart);
 
     }
 
@@ -112,7 +112,7 @@ public class AutomationExcerciseTest {
         productsLink.click();
 
         String productsPage = driver.getCurrentUrl();
-        Assert.assertEquals("https://automationexercise.com/products", productsPage);
+        Assertions.assertEquals("https://www.automationexercise.com/products", productsPage);
 
         WebElement searchBox = driver.findElement(By.id("search_product"));
         WebElement searchButton = driver.findElement(By.id("submit_search"));
@@ -121,10 +121,10 @@ public class AutomationExcerciseTest {
         searchButton.click();
 
         String searchTitle = driver.findElement(By.cssSelector("h2.title.text-center")).getText();
-        Assert.assertEquals("SEARCHED PRODUCTS", searchTitle);
+        Assertions.assertEquals("SEARCHED PRODUCTS", searchTitle);
 
         List<WebElement> productsFound = driver.findElements(By.className("product-image-wrapper"));
-        Assert.assertEquals(quantityExpected, productsFound.size());
+        Assertions.assertEquals(quantityExpected, productsFound.size());
 
     }
 
@@ -134,7 +134,7 @@ public class AutomationExcerciseTest {
         WebElement contactUs = driver.findElement(By.xpath("//*[@id=\"header\"]/div/div/div/div[2]/div/ul/li[9]/a"));
         contactUs.click();
         currentURL = driver.getCurrentUrl();
-        Assert.assertEquals("https://automationexercise.com/contact_us", currentURL);
+        Assertions.assertEquals("https://www.automationexercise.com/contact_us", currentURL);
         //Busqueda de elementos del formulario de contacto
         WebElement name = driver.findElement(By.name("name"));
         WebElement email = driver.findElement(By.name("email"));
@@ -152,13 +152,13 @@ public class AutomationExcerciseTest {
         driver.switchTo().alert().accept();
         //Se valida resultado final
         String successMessage = driver.findElement(By.cssSelector("div.status.alert.alert-success")).getText();
-        Assert.assertEquals("El texto no existe", "Success! Your details have been submitted successfully.", successMessage);
+        Assertions.assertEquals("El texto no existe", "Success! Your details have been submitted successfully.", successMessage);
 
     }
 
     public void addProductToCart() {
         // Ir a la sección de productos
-        driver.get("https://automationexercise.com/products");
+        driver.get("https://www.automationexercise.com/products");
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".product-image-wrapper")));
 
         //Eliminar anuncios que puedan interceptar el click
@@ -183,14 +183,11 @@ public class AutomationExcerciseTest {
         } catch (Exception e) {
 
         }
-//        WebElement addToCartButton = driver.findElement(By.cssSelector("button.btn.btn-default.cart"));
-//        wait.until(ExpectedConditions.visibilityOf(addToCartButton));
-//        addToCartButton.click();
 
         WebElement confirmationModal = wait.until(ExpectedConditions.visibilityOfElementLocated(
                 By.className("modal-content")));
 
-        Assert.assertNotNull(confirmationModal);
+        Assertions.assertNotNull(confirmationModal);
 
         WebElement continueShoppingButton = wait.until(ExpectedConditions.elementToBeClickable(
                 By.cssSelector("button.btn.btn-success.close-modal.btn-block")
@@ -210,14 +207,14 @@ public class AutomationExcerciseTest {
         @Test
         void deleteProductToCart() {
 
-            driver.get("https://automationexercise.com/view_cart");
+            driver.get("https://www.automationexercise.com/view_cart");
             currentURL = driver.getCurrentUrl();
-            Assert.assertEquals("https://automationexercise.com/view_cart", currentURL);
+            Assertions.assertEquals("https://www.automationexercise.com/view_cart", currentURL);
 
             //Obtener la lista de botones Eliminar
             List<WebElement> deleteButtons = driver.findElements(By.cssSelector("a.cart_quantity_delete"));
 
-            Assert.assertFalse("No hay productos en el carrito", deleteButtons.isEmpty());
+            Assertions.assertFalse(deleteButtons.isEmpty(), "No hay productos en el carrito");
 
             //Guardar la cantidad en una variable
             int countButtons = deleteButtons.size();
@@ -226,10 +223,6 @@ public class AutomationExcerciseTest {
             //Eliminar un producto random
             WebElement randomDeleteButton = deleteButtons.get(randomIndex);
             randomDeleteButton.click();
-
-            //Validar mensaje de eliminacion exitosa en pantalla
-//       String emptyCart = driver.findElement(By.cssSelector("#empty_cart > p.text-center")).getText();
-//       Assert.assertTrue(emptyCart.contains("Cart is empty!"));
 
         }
 
@@ -241,7 +234,7 @@ public class AutomationExcerciseTest {
             WebElement checkoutButton = driver.findElement(By.cssSelector("a.btn.check_out"));
             checkoutButton.click();
             currentURL = driver.getCurrentUrl();
-            Assert.assertEquals("https://automationexercise.com/checkout", currentURL);
+            Assertions.assertEquals("https://www.automationexercise.com/checkout", currentURL);
             WebElement placeOrder = wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Place Order")));
             ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", placeOrder);
             placeOrder.click();
@@ -264,10 +257,10 @@ public class AutomationExcerciseTest {
 
             driver.navigate().refresh();
             currentURL = driver.getCurrentUrl();
-            Assert.assertTrue("URL Incorrecta", currentURL.contains("payment_done"));
+            Assertions.assertTrue(currentURL.contains("payment_done"), "URL Incorrecta");
 
             String textConfirmation = driver.findElement(By.cssSelector("#form > div > div > div > p")).getText();
-            Assert.assertEquals("El texto no esta presente", "Congratulations! Your order has been confirmed!", textConfirmation);
+            Assertions.assertEquals("El texto no esta presente", "Congratulations! Your order has been confirmed!", textConfirmation);
 
         }
     }
