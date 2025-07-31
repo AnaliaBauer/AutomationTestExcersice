@@ -59,6 +59,7 @@ public class RegisterTest {
 
 
     @ParameterizedTest
+    @DisplayName("Registro con campos vacios")
     @CsvSource({
             //name - email - validacionesNAME, validacionesEMAIL
             "'', analia@gmail.com,false, true",
@@ -88,6 +89,7 @@ public class RegisterTest {
 
 
     @Test
+    @DisplayName("Registro con usuario existente")
     void registrationWithExistingUser() {
 
         completeForm("Analia Bauer", "bauerany@gmail.com");
@@ -99,6 +101,7 @@ public class RegisterTest {
     }
 
     @Test
+    @DisplayName("Registro con usuario valido")
     void registrationWithValidUser(){
 
         completeForm("Analia Bauer", "analiabauer" + System.currentTimeMillis() + "@gmail.com");

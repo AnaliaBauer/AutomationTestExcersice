@@ -52,6 +52,7 @@ public class LoginTest {
     }
 
     @ParameterizedTest
+    @DisplayName("Login con campos vacios")
     @CsvSource({
             //email - pass - validacionesEmail, validacionesPass
             "'', '123456', false, true", //falla el email
@@ -75,6 +76,7 @@ public class LoginTest {
     }
 
     @Test
+    @DisplayName("Login con credenciales incorrectas")
     void loginWithIncorrectCredentials(){
 
         completeForm("inexist@gmail.com", "123456");
@@ -84,6 +86,7 @@ public class LoginTest {
     }
 
     @Test
+    @DisplayName("Login exitoso")
     void successfulLogin(){
 
         completeForm("bauerany@gmail.com", "123456");
