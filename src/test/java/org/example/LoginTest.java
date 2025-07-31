@@ -38,6 +38,9 @@ public class LoginTest {
         inputPass = driver.findElement(By.cssSelector("input[type = 'password'][data-qa = 'login-password']"));
         loginButton = driver.findElement(By.cssSelector("button[type = 'submit'][data-qa = 'login-button']"));
 
+        inputEmail.clear();
+        inputPass.clear();
+
     }
 
     @AfterAll
@@ -51,16 +54,12 @@ public class LoginTest {
     @ParameterizedTest
     @CsvSource({
             //email - pass - validacionesEmail, validacionesPass
-            "'', '123456', false, true",
+            "'', '123456', false, true", //falla el email
             "bauerany@gmail.com, '', true, false", // falla el pass
             "'', '', false, false" // fallan ambos
 
-//            "Emiliano, emiliano.com, true, false", // falla el email
     })
     void loginWiThEmptyFields(String name, String email, boolean validationEmail, boolean validationPass) {
-
-        inputEmail.clear();
-        inputPass.clear();
 
         inputEmail.sendKeys(name != null ? name : "");
         inputPass.sendKeys(email != null ? email : "");
@@ -76,11 +75,18 @@ public class LoginTest {
     }
 
     @Test
+    void loginWithIncorrectCredentials(){
+
+        completeForm("inexist@gmail.com", "123456");
+
+        String warningText = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"form\"]/div/div/div[1]/div/form/p"))).getText();
+        Assertions.assertEquals("Your email or password is incorrect!", warningText);
+    }
+
+    @Test
     void successfulLogin(){
 
-        inputEmail.sendKeys("bauerany@gmail.com");
-        inputPass.sendKeys("123456");
-        loginButton.click();
+        completeForm("bauerany@gmail.com", "123456");
 
         wait.until(ExpectedConditions.urlToBe("https://www.automationexercise.com/"));
         Assertions.assertEquals("https://www.automationexercise.com/", driver.getCurrentUrl());
@@ -88,4 +94,16 @@ public class LoginTest {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("a[href='/logout']")));
 
     }
+
+    //Metodo para completar formulario inicial
+    public void completeForm(String email, String pass){
+
+        inputEmail.clear();
+        inputPass.clear();
+        inputEmail  .sendKeys(email);
+        inputPass.sendKeys(pass);
+        loginButton.click();
+
+    }
+
 }

@@ -44,14 +44,14 @@
       <artifactId>selenium-java</artifactId>
       <version>4.33.0</version>
     </dependency>
-    --Test parametrizados
+    <!-- Test parametrizados -->
     <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-params</artifactId>
         <version>5.10.2</version>
         <scope>test</scope>
     </dependency>
-
+    
     <!--    <dependency>-->
 <!--      <groupId>junit</groupId>-->
 <!--      <artifactId>junit</artifactId>-->

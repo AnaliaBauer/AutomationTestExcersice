@@ -38,14 +38,8 @@ public class ProductsTest {
 
         driver.get("https://automationexercise.com/");
 
-        WebElement loginLink = driver.findElement(By.xpath("//*[@id=\"header\"]/div/div/div/div[2]/div/ul/li[4]/a"));
-        loginLink.click();
-        WebElement inputEmail = driver.findElement(By.name("email"));
-        WebElement inputPassword = driver.findElement(By.name("password"));
-        inputEmail.sendKeys("analiabauer.testing1@gmail.com");
-        inputPassword.sendKeys("Admin123");
-        WebElement submitButton = driver.findElement(By.xpath("//*[@id=\"form\"]/div/div/div[1]/div/form/button"));
-        submitButton.click();
+        login();
+
     }
 
     @AfterAll
@@ -57,6 +51,7 @@ public class ProductsTest {
     }
 
     @Test
+    @DisplayName("Agregar producto al carrito")
     void addToCart() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
@@ -103,8 +98,13 @@ public class ProductsTest {
     }
 
     @ParameterizedTest
+    @DisplayName("Buscar productos")
     @CsvSource({
             "jeans, 3",
+            "tshirt, 6",
+            "dress, 9",
+            "tops, 13",
+            "socks, 0",
             "hodies, 0"
     })
     void searchproduct(String tag, int quantityExpected) {
@@ -112,7 +112,7 @@ public class ProductsTest {
         productsLink.click();
 
         String productsPage = driver.getCurrentUrl();
-        Assertions.assertEquals("https://www.automationexercise.com/products", productsPage);
+        Assertions.assertEquals("https://automationexercise.com/products", productsPage);
 
         WebElement searchBox = driver.findElement(By.id("search_product"));
         WebElement searchButton = driver.findElement(By.id("submit_search"));
@@ -129,12 +129,13 @@ public class ProductsTest {
     }
 
     @Test
+    @DisplayName("Enviar formulario de contacto")
     void contactUsForm() {
         //Se busca el elemento link a la pagina Contact Us y se verifica estar en la pagina correcta
         WebElement contactUs = driver.findElement(By.xpath("//*[@id=\"header\"]/div/div/div/div[2]/div/ul/li[9]/a"));
         contactUs.click();
         currentURL = driver.getCurrentUrl();
-        Assertions.assertEquals("https://www.automationexercise.com/contact_us", currentURL);
+        Assertions.assertEquals("https://automationexercise.com/contact_us", currentURL);
         //Busqueda de elementos del formulario de contacto
         WebElement name = driver.findElement(By.name("name"));
         WebElement email = driver.findElement(By.name("email"));
@@ -147,18 +148,37 @@ public class ProductsTest {
         email.sendKeys("analiabauer.testing@gmail.com");
         subject.sendKeys("Consulta precios por mayor");
         messaje.sendKeys("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut.");
-        file.sendKeys("C:\\Users\\Analia\\Documents\\Documentos de prueba\\PDF Pruebas");
+        file.sendKeys("C:\\Users\\Analia\\Documents\\Documentos de prueba\\PDF Pruebas.pdf");
         submitMessage.click();
         driver.switchTo().alert().accept();
         //Se valida resultado final
         String successMessage = driver.findElement(By.cssSelector("div.status.alert.alert-success")).getText();
-        Assertions.assertEquals("El texto no existe", "Success! Your details have been submitted successfully.", successMessage);
+        Assertions.assertEquals("Success! Your details have been submitted successfully.", successMessage, "El texto no coincide");
 
     }
 
+    public static void login() {
+        driver.get("https://automationexercise.com/");
+        WebElement loginLink = driver.findElement(By.xpath("//*[@id=\"header\"]/div/div/div/div[2]/div/ul/li[4]/a"));
+        loginLink.click();
+        WebElement inputEmail = driver.findElement(By.name("email"));
+        WebElement inputPassword = driver.findElement(By.name("password"));
+        inputEmail.sendKeys("analiabauer.testing1@gmail.com");
+        inputPassword.sendKeys("Admin123");
+        WebElement submitButton = driver.findElement(By.xpath("//*[@id=\"form\"]/div/div/div[1]/div/form/button"));
+        submitButton.click();
+
+        WebElement loggedInAs = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//a[contains(text(), 'Logged in as')]")
+        ));
+        Assertions.assertTrue(loggedInAs.isDisplayed(), "Login no exitoso");
+    }
+
     public void addProductToCart() {
+
         // Ir a la sección de productos
-        driver.get("https://www.automationexercise.com/products");
+        WebElement productLink = driver.findElement(By.cssSelector("a[href='/products']"));
+        productLink.click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".product-image-wrapper")));
 
         //Eliminar anuncios que puedan interceptar el click
@@ -196,20 +216,14 @@ public class ProductsTest {
 
     }
 
-    @Nested
-    class WithProductInCart {
-
-        @BeforeEach
-        void addProduct() {
-            addProductToCart();
-        }
-
         @Test
+        @DisplayName("Eliminar un producto del carrito")
         void deleteProductToCart() {
-
-            driver.get("https://www.automationexercise.com/view_cart");
+            addProductToCart();
+            WebElement cart = driver.findElement(By.xpath("//*[@id=\"header\"]/div/div/div/div[2]/div/ul/li[3]/a"));
+            cart.click();
             currentURL = driver.getCurrentUrl();
-            Assertions.assertEquals("https://www.automationexercise.com/view_cart", currentURL);
+            Assertions.assertEquals("https://automationexercise.com/view_cart", currentURL);
 
             //Obtener la lista de botones Eliminar
             List<WebElement> deleteButtons = driver.findElements(By.cssSelector("a.cart_quantity_delete"));
@@ -227,14 +241,15 @@ public class ProductsTest {
         }
 
         @Test
+        @DisplayName("Pagar un producto")
         void checkout() {
-
+            addProductToCart();
             WebElement cart = driver.findElement(By.xpath("//*[@id=\"header\"]/div/div/div/div[2]/div/ul/li[3]/a"));
             cart.click();
             WebElement checkoutButton = driver.findElement(By.cssSelector("a.btn.check_out"));
             checkoutButton.click();
             currentURL = driver.getCurrentUrl();
-            Assertions.assertEquals("https://www.automationexercise.com/checkout", currentURL);
+            Assertions.assertEquals("https://automationexercise.com/checkout", currentURL);
             WebElement placeOrder = wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Place Order")));
             ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", placeOrder);
             placeOrder.click();
@@ -260,11 +275,8 @@ public class ProductsTest {
             Assertions.assertTrue(currentURL.contains("payment_done"), "URL Incorrecta");
 
             String textConfirmation = driver.findElement(By.cssSelector("#form > div > div > div > p")).getText();
-            Assertions.assertEquals("El texto no esta presente", "Congratulations! Your order has been confirmed!", textConfirmation);
+            Assertions.assertEquals("Congratulations! Your order has been confirmed!", textConfirmation, "El texto no está presente");
 
         }
-    }
-
-
 
 }
